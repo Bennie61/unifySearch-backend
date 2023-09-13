@@ -4,10 +4,14 @@ import cn.hutool.http.HttpRequest;
 import cn.hutool.json.JSONArray;
 import cn.hutool.json.JSONObject;
 import cn.hutool.json.JSONUtil;
+import com.baomidou.mybatisplus.extension.service.IService;
 import com.yupi.unifySearch.model.entity.Post;
+import com.yupi.unifySearch.service.PostService;
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
 
+import javax.annotation.Resource;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -17,6 +21,8 @@ import java.util.Map;
  **/
 @SpringBootTest
 public class CrawlerTest {
+    @Resource
+    private PostService postService;
     @Test
     void testFetchPassage() {
         // 1. 获取数据
@@ -45,6 +51,10 @@ public class CrawlerTest {
             post.setUserId(1L);
             postList.add(post);
         }
-        System.out.println(postList);
+        // 3. 数据入库
+        // 利用 postService 继承的IService接口中的批量插入方法saveBatch()
+        boolean b = postService.saveBatch(postList);
+        Assertions.assertTrue(b);
+
     }
 }
