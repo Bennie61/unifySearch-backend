@@ -1,30 +1,32 @@
-package com.yupi.unifySearch;
+package com.yupi.unifySearch.job.once;
 
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
 import cn.hutool.http.HttpRequest;
 import cn.hutool.json.JSONArray;
 import cn.hutool.json.JSONObject;
 import cn.hutool.json.JSONUtil;
-import com.baomidou.mybatisplus.extension.service.IService;
 import com.yupi.unifySearch.model.entity.Post;
 import com.yupi.unifySearch.service.PostService;
-import org.junit.jupiter.api.Assertions;
-import org.junit.jupiter.api.Test;
-import org.springframework.boot.test.context.SpringBootTest;
-
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.boot.CommandLineRunner;
+import org.springframework.stereotype.Component;
 import javax.annotation.Resource;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
 
 /**
- * @Description ToDo
+ * @Description 获取初始帖子列表
+ * @Author benny
  **/
-@SpringBootTest
-public class CrawlerTest {
+
+// 取消 @Component 注释后, 每次启动 SpringBoot 项目会执行一次 run 方法
+//@Component
+@Slf4j
+public class FetchInitPostList implements CommandLineRunner {
     @Resource
     private PostService postService;
-    @Test
-    void testFetchPassage() {
+    @Override
+    public void run(String... args) {
         // 1. 获取数据
         String json = "{\"current\": 1, \"pageSize\": 8, \"sortField\": \"createTime\", \"sortOrder\": \"descend\", \"category\": \"文章\",\"reviewStatus\": 1}";
         String url = "https://www.code-nav.cn/api/post/search/page/vo";
@@ -34,7 +36,6 @@ public class CrawlerTest {
                 .execute()
                 .body();
         // 2. json 转对象
-        // 利用 hutool的JSONUtil.toBean()方法将 json 转换为指定对象
         Map<String, Object> map = JSONUtil.toBean(result, Map.class);
         JSONObject data = (JSONObject) map.get("data");
         JSONArray records = (JSONArray) data.get("records");
@@ -52,8 +53,12 @@ public class CrawlerTest {
             postList.add(post);
         }
         // 3. 数据入库
-        // 利用 postService 继承的IService接口中的批量插入方法saveBatch()
         boolean b = postService.saveBatch(postList);
-        Assertions.assertTrue(b);
+        if (b) {
+            log.info("获取初始化帖子列表成功, 条数 = {}", postList.size());
+        } else {
+            log.error("获取初始化帖子列表失败");
+        }
     }
+
 }
