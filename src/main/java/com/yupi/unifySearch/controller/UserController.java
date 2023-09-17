@@ -255,6 +255,7 @@ public class UserController {
             HttpServletRequest request) {
         long current = userQueryRequest.getCurrent();
         long size = userQueryRequest.getPageSize();
+        // 调用Service层的page方法，需要两个参数，一个是page，必要的参数；一个是 queryWrapper，存放查询条件
         Page<User> userPage = userService.page(new Page<>(current, size),
                 userService.getQueryWrapper(userQueryRequest));
         return ResultUtils.success(userPage);

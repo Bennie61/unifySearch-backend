@@ -1,26 +1,17 @@
 package com.yupi.unifySearch.controller;
 
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
-import com.google.gson.Gson;
 import com.yupi.unifySearch.common.BaseResponse;
 import com.yupi.unifySearch.common.ErrorCode;
 import com.yupi.unifySearch.common.ResultUtils;
 import com.yupi.unifySearch.exception.ThrowUtils;
 import com.yupi.unifySearch.model.dto.picture.PictureQueryRequest;
 import com.yupi.unifySearch.model.entity.Picture;
-import com.yupi.unifySearch.model.entity.Post;
-import com.yupi.unifySearch.model.entity.User;
-import com.yupi.unifySearch.model.vo.PostVO;
 import com.yupi.unifySearch.service.PictureService;
-import com.yupi.unifySearch.service.PostService;
-import com.yupi.unifySearch.service.UserService;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.BeanUtils;
 import org.springframework.web.bind.annotation.*;
-
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
-import java.util.List;
 
 /**
  * 图片接口
