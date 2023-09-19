@@ -14,8 +14,6 @@ import springfox.documentation.swagger2.annotations.EnableSwagger2;
  * Knife4j 接口文档配置
  * https://doc.xiaominfo.com/knife4j/documentation/get_start.html
  *
- * @author <a href="https://github.com/liyupi">程序员鱼皮</a>
- * @from <a href="https://yupi.icu">编程导航知识星球</a>
  */
 @Configuration
 @EnableSwagger2
@@ -31,7 +29,7 @@ public class Knife4jConfig {
                         .version("1.0")
                         .build())
                 .select()
-                // 指定 Controller 扫描包路径
+                // 下面的代码用于告诉Swagger需要扫描的 Controller的包路径。
                 .apis(RequestHandlerSelectors.basePackage("com.yupi.unifySearch.controller"))
                 .paths(PathSelectors.any())
                 .build();
