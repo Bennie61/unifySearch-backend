@@ -4,6 +4,7 @@
 ## 技术栈
 * Spring Boot 2.7 框架
 * SpringBoot-Template 项目模版
+* Knife4j 项目的Swagger接口文档和接口测试工具
 * MySQL 数据库
 * Elastic Stack
   * ElasticSearch 搜索引擎
@@ -11,6 +12,7 @@
   * Kibana 数据可视化
 * 数据抓取
   * 离线和实时抓取
+  * Jsoup 和 HttpClient 库
 ## 为什么要使用一站式信息搜索或聚合搜索
 现有的聚合搜索平台案例：
 * [今日热榜](https://tophub.today/) 

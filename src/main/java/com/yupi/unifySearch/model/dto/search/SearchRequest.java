@@ -6,7 +6,7 @@ import lombok.EqualsAndHashCode;
 import java.io.Serializable;
 
 /**
- * @Description ToDo
+ * @Description 聚合查询请求
  * @Author benny
  **/
 @EqualsAndHashCode(callSuper = true)
