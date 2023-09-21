@@ -1,9 +1,7 @@
 package com.yupi.unifySearch.datasource;
 
-
 import com.yupi.unifySearch.model.enums.SearchTypeEnum;
 import org.springframework.stereotype.Component;
-
 import javax.annotation.PostConstruct;
 import javax.annotation.Resource;
 import java.util.HashMap;
@@ -24,7 +22,6 @@ public class DataSourceRegistry {
     private PictureDataSource pictureDataSource;
 
     private Map<String, DataSource<?>> typeDataSourceMap;
-
     @PostConstruct
     public void doInit(){
         typeDataSourceMap = new HashMap(){{

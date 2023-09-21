@@ -25,7 +25,6 @@ import java.util.concurrent.CompletableFuture;
  * @Description 搜索门面模式
  * @Author benny
  **/
-
 @Component
 @Slf4j
 public class SearchFacade {
@@ -82,7 +81,7 @@ public class SearchFacade {
         }else{
             // 修改⻔⾯，改⽤适配器的接⼝。
             SearchVO searchVO = new SearchVO();
-            //注册模式
+            //注册模式，以替代if-else语句
             DataSource<?> dataSource = dataSourceRegistry.getDataSourceByType(type);
             Page<?> page = dataSource.doSearch(searchText, current, pageSize);
             searchVO.setDataList(page.getRecords());
