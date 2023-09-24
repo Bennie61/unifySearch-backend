@@ -1,4 +1,4 @@
-# 项目介绍
+# UnifySearch聚合搜索项目介绍
 > 作者：[Bennie](https://github.com/Bennie61)
 * 基于Spring Boot + Vue + Elastic Stack的一站式信息搜索平台，用户可在一个页面集中搜索出不同来源、不同类型的内容，提升搜索体验。当企业中有多个项目的数据需要被搜索时，无需针对每个项目单独开发搜索功能，可以直接将数据接入搜索中台，提升开发效率。
 ## 01 技术栈
@@ -41,4 +41,39 @@ ___
 >**小结：门面类SearchFacade在这里充当了一个中间层，将Controller层与子接口解耦，使得系统更易于扩展和维护。**
 
 2. 在实践中如何使用注册器模式来管理组件或服务？
-Todo...
+* 注册器模式基本思想：
+  * **把多个类的实例注册到一个注册器类中去，然后需要哪个类，就由这个注册器类统一调取。**
+  * 给很多类的实例，起个别名，然后按照key，value的形式放在注册器类里，以便之后统一调用
+* 项目实践案例：
+  * 由于需要根据type类型去调用不同的数据源对象，导致代码中存在大量if-else分支结构。
+  * 存在的问题：
+(1) 可读性差: 大量的 if-else 分支会使代码变得冗长，降低可读性；
+(2) 扩展困难: 如果需要添加新的功能或条件，就需要修改现有的分支结构;
+(3) 耦合度高。
+  * 具体做法：编写一个注册器类`DataSourceRegistry`，其中维护一个`typeDataSourceMap`对象成员，其类型为`Map<String, DataSource<?>>`，在`doInit()`方法新建HashMap来存储类实例名称和类实例，代码如下所示。
+```java
+public class DataSourceRegistry {
+    @Resource
+    private UserDataSource userDataSource;
+    @Resource
+    private PostDataSource postDataSource;
+    @Resource
+    private PictureDataSource pictureDataSource;
+    private Map<String, DataSource<?>> typeDataSourceMap;
+    @PostConstruct
+    public void doInit(){
+        typeDataSourceMap = new HashMap(){{
+            put(SearchTypeEnum.POST.getValue(), postDataSource);
+            put(SearchTypeEnum.USER.getValue(), userDataSource);
+            put(SearchTypeEnum.PICTURE.getValue(), pictureDataSource);
+        }};
+    }
+    public DataSource getDataSourceByType(String type){
+        if (typeDataSourceMap == null) return null;
+        return typeDataSourceMap.get(type);
+    }
+}
+```
+  * 门面类获取某类数据源对象的调用方式：`DataSource<?> dataSource = dataSourceRegistry.getDataSourceByType(type);`，通过该方式可以替代if-else语句，降低耦合，减少圈复杂度。
+  * UML类图如下：
+![img.png](Note/images/img.png)

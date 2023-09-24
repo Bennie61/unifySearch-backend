@@ -2,6 +2,7 @@ package com.yupi.unifySearch.datasource;
 
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.yupi.unifySearch.model.dto.post.PostQueryRequest;
+import com.yupi.unifySearch.model.entity.Post;
 import com.yupi.unifySearch.model.vo.PostVO;
 import com.yupi.unifySearch.service.PostService;
 import lombok.extern.slf4j.Slf4j;
@@ -31,9 +32,17 @@ public class PostDataSource implements DataSource<PostVO> {
         // HttpServletRequest request
         ServletRequestAttributes servletRequestAttributes =(ServletRequestAttributes) RequestContextHolder.getRequestAttributes();
         HttpServletRequest request = servletRequestAttributes.getRequest();
+        /**
+         * 原始版本(未使用ES)
+         * Page<PostVO> postVOPage = postService.listPostVOByPage(postQueryRequest, request);
+         * return postVOPage;
+         */
 
-        Page<PostVO> postVOPage = postService.listPostVOByPage(postQueryRequest, request);
-        return postVOPage;
+        /**
+         * 使用ES查询
+         */
+        Page<Post> postPage = postService.searchFromEs(postQueryRequest);
+        return postService.getPostVOPage(postPage,request);
     }
 }
 
