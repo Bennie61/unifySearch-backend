@@ -50,15 +50,11 @@ import org.springframework.stereotype.Service;
 /**
  * 帖子服务实现
  *
- * @author <a href="https://github.com/liyupi">程序员鱼皮</a>
- * @from <a href="https://yupi.icu">编程导航知识星球</a>
  */
 @Service
 @Slf4j
 public class PostServiceImpl extends ServiceImpl<PostMapper, Post> implements PostService {
-
     private final static Gson GSON = new Gson();
-
     @Resource
     private UserService userService;
 
@@ -67,7 +63,9 @@ public class PostServiceImpl extends ServiceImpl<PostMapper, Post> implements Po
 
     @Resource
     private PostFavourMapper postFavourMapper;
-
+    /**
+     * 使用 Spring Data Elasticsearch的 ElasticsearchRestTemplate来操作ES
+     */
     @Resource
     private ElasticsearchRestTemplate elasticsearchRestTemplate;
 
@@ -133,8 +131,14 @@ public class PostServiceImpl extends ServiceImpl<PostMapper, Post> implements Po
         return queryWrapper;
     }
 
+    /**
+     * 从 Es中查询文章
+     * @param postQueryRequest 查询包装类
+     * @return Post分页结果
+     */
     @Override
     public Page<Post> searchFromEs(PostQueryRequest postQueryRequest) {
+        // 取出包装类中的查询参数
         Long id = postQueryRequest.getId();
         Long notId = postQueryRequest.getNotId();
         String searchText = postQueryRequest.getSearchText();
@@ -207,7 +211,7 @@ public class PostServiceImpl extends ServiceImpl<PostMapper, Post> implements Po
         Page<Post> page = new Page<>();
         page.setTotal(searchHits.getTotalHits());
         List<Post> resourceList = new ArrayList<>();
-        // 查出结果后，从 db 获取最新动态数据（比如点赞数）
+        // 查出结果后，从 MySQL中获取指定文章的最新动态数据（比如点赞数）
         if (searchHits.hasSearchHits()) {
             List<SearchHit<PostEsDTO>> searchHitList = searchHits.getSearchHits();
             List<Long> postIdList = searchHitList.stream().map(searchHit -> searchHit.getContent().getId())
